@@ -1,5 +1,17 @@
 import logging
 import random
+import keras
+import tensorflow as tf
+import pandas as pd
+from sklearn.pipeline import Pipeline
+from tensorflow import keras
+import sklearn
+import joblib
+
+
+
+
+#Imports 
 
 from fastapi import APIRouter
 import pandas as pd
@@ -7,6 +19,24 @@ from pydantic import BaseModel, Field, validator
 
 log = logging.getLogger(__name__)
 router = APIRouter()
+
+# Load Pickled Module
+model = keras.models.load_model("app/model.hdf5")
+pipeline = joblib.load('app/sklearn_pipeline.pkl')
+####
+
+# def predict_text(text, model = model):
+#     xtemp = pipeline.transform([text])
+#     predictions = model.predict(xtemp)
+#     print(predictions)
+#     return predictions
+# print(keras.__version__)
+# print(sklearn.__version__)
+# print(tf.__version__)
+# preds = predict_text("I hate all this all of you")
+
+
+###
 
 class Comment(BaseModel):
     """Use this Data Model to Parse requests for Comments"""
@@ -49,7 +79,6 @@ async def predict(comment: Comment):
     ### Request Body
     - `author`: string
     - `comment`: string
-    - `x3`: string
 
     ### Response
     - `username`: string
@@ -59,7 +88,7 @@ async def predict(comment: Comment):
 
     X_new = comment.to_df()
     username = comment.author
-    saltiness = predict(comment.comment_text)
+    saltiness = predict("I hate all this all of you")
     comment = comment.comment_text
     log.info(X_new)
     print(X_new)
@@ -70,6 +99,8 @@ async def predict(comment: Comment):
         'saltiness': saltiness,
         'comment': comment
     }
-def predict(comment):
-    y_pred = random.random() / 2 + 0.5
-    return y_pred
+def predict(text,model=model):
+    xtemp =pipeline.transform([text])
+    predictions = model.predict(xtemp)
+    print(predictions)
+    return predictions
