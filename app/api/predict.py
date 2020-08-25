@@ -8,6 +8,19 @@ from pydantic import BaseModel, Field, validator
 log = logging.getLogger(__name__)
 router = APIRouter()
 
+class Comment(BaseModel):
+    """Use this Data Model to Parse requests for Comments"""
+    #timestamp: str = Field(...,example='2020-01-01') # Date or Timestamp. tbd
+    #objectid: int = Field(...,example=8409948) # Comment ID
+    author: str = Field(...,example='imanaccount247') # User Id/ Author
+   # parent_id: int = Field(...,example=8409924)
+    comment_text: str = Field(...,example='No it is not. objects make it le')
+   # points: int = Field(...,example=2)
+
+    def to_df(self):
+        """Convert pydantic object to pandas dataframe with 1 row."""
+        return pd.DataFrame([dict(self)])
+
 
 class Item(BaseModel):
     """Use this data model to parse the request body JSON."""
@@ -28,28 +41,35 @@ class Item(BaseModel):
 
 
 @router.post('/predict')
-async def predict(item: Item):
+async def predict(comment: Comment):
     """
-    Make random baseline predictions for classification problem 🔮
+    Predict Comment Toxicity from Comment. 
+    Takes author(username) and comment
 
     ### Request Body
-    - `x1`: positive float
-    - `x2`: integer
+    - `author`: string
+    - `comment`: string
     - `x3`: string
 
     ### Response
-    - `prediction`: boolean, at random
-    - `predict_proba`: float between 0.5 and 1.0, 
-    representing the predicted class's probability
-
-    Replace the placeholder docstring and fake predictions with your own model.
+    - `username`: string
+    - `comment`: string
+    - `saltiness`: float
     """
 
-    X_new = item.to_df()
+    X_new = comment.to_df()
+    username = comment.author
+    saltiness = predict(comment.comment_text)
+    comment = comment.comment_text
     log.info(X_new)
-    y_pred = random.choice([True, False])
-    y_pred_proba = random.random() / 2 + 0.5
+    print(X_new)
+   # y_pred = random.choice([True, False])
+    #y_pred_proba = random.random() / 2 + 0.5
     return {
-        'prediction': y_pred,
-        'probability': y_pred_proba
+        'username': username,
+        'saltiness': saltiness,
+        'comment': comment
     }
+def predict(comment):
+    y_pred = random.random() / 2 + 0.5
+    return y_pred
