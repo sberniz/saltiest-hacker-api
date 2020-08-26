@@ -1,11 +1,11 @@
 import logging
 import random
-import keras
-import tensorflow as tf
-import pandas as pd
-from sklearn.pipeline import Pipeline
-from tensorflow import keras
-import sklearn
+# import keras
+# import tensorflow as tf
+# import pandas as pd
+# from sklearn.pipeline import Pipeline
+# from tensorflow import keras
+# import sklearn
 import joblib
 
 
@@ -21,8 +21,11 @@ log = logging.getLogger(__name__)
 router = APIRouter()
 
 # Load Pickled Module
-model = keras.models.load_model("app/model.hdf5")
-pipeline = joblib.load('app/sklearn_pipeline.pkl')
+# model = keras.models.load_model("app/model.hdf5")
+# pipeline = joblib.load('app/sklearn_pipeline.pkl')
+
+model = joblib.load('app/tree_reg.pkl')
+pipeline = joblib.load('app/sklearn_pipeline_tree.pkl')
 ####
 
 # def predict_text(text, model = model):
@@ -88,7 +91,7 @@ async def predict(comment: Comment):
 
     X_new = comment.to_df()
     username = comment.author
-    saltiness = predict("I hate all this all of you")
+    saltiness = predict(comment.comment_text)
     comment = comment.comment_text
     log.info(X_new)
     print(X_new)
@@ -103,4 +106,4 @@ def predict(text,model=model):
     xtemp =pipeline.transform([text])
     predictions = model.predict(xtemp)
     print(predictions)
-    return predictions
+    return predictions[0]
