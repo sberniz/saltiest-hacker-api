@@ -1,4 +1,3 @@
-from os import getenv
 from fastapi import APIRouter, HTTPException
 import pandas as pd
 import plotly.express as px
@@ -14,15 +13,13 @@ def db_conect():
     pg_conn = psycopg2.connect(dbname=dbname, user=user,
                            password=password, host=host)
     return pg_conn
-pg_conn = db_conect() #
+pg_conn = db_conect() 
 def  exec_query(pg_conn,query):
     pg_curs = pg_conn.cursor()
     pg_curs.execute(query)
     results=pg_curs.fetchall()
     pg_curs.close()
     return results
-# users class model try 
-
 
 router = APIRouter()
 
