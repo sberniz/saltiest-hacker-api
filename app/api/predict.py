@@ -76,7 +76,7 @@ class Item(BaseModel):
 @router.post('/predict')
 async def predict(comment: Comment):
     """
-    Predict Comment Toxicity from Comment. 
+    Predict Comment saltiness from Comment. 
     Takes author(username) and comment
 
     ### Request Body

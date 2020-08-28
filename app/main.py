@@ -13,7 +13,6 @@ app = FastAPI(
 )
 #app.config['SQLALCHEMY_DATABASE_URI'] = getenv('DATABASE_URL')
 app.include_router(predict.router)
-app.include_router(viz.router)
 app.include_router(salty.router)
 
 app.add_middleware(

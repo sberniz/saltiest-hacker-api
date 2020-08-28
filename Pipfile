@@ -12,6 +12,7 @@ plotly = "==4.9.0"
 joblib = "==0.16.0"
 scikit-learn = "==0.23.1"
 psycopg2-binary = "*"
+mysql-connector-python = "*"
 
 [dev-packages]
 
